@@ -23,7 +23,7 @@ class UserRepository:
             self.db.rollback()
             raise
 
-    def search_users(self, query: str, page:int=1, limit:int=10) -> Tuple[list[User], Pagination]:
+    def search_todos(self, query: str, page:int=1, limit:int=10) -> Tuple[list[User], Pagination]:
         offset = (page - 1) * limit
         db_qry = select(User)
         if query:
@@ -33,10 +33,10 @@ class UserRepository:
         count_qry = select(func.count()).select_from(db_qry.subquery())
         count_todos = self.db.exec(count_qry).one()
 
-        users = self.db.exec(db_qry.offset(offset).limit(limit)).all()
+        todos = self.db.exec(db_qry.offset(offset).limit(limit)).all()
         pagination = Pagination(total_count=count_todos, current_page=page, limit=limit)
 
-        return users, pagination
+        return todos, pagination
 
     def get_by_username(self, username: str) -> Optional[User]:
         return self.db.exec(select(User).where(User.username == username)).one_or_none()
@@ -44,7 +44,7 @@ class UserRepository:
     def get_by_id(self, user_id: int) -> Optional[User]:
         return self.db.get(User, user_id)
 
-    def get_all_users(self) -> list[User]:
+    def get_all_todos(self) -> list[User]:
         return self.db.exec(select(User)).all()
 
     def update_user(self, user_id:int, user_data: UserUpdate)->User:
