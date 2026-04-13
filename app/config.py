@@ -6,7 +6,7 @@ def get_settings():
     return Settings()
 
 class Settings(BaseSettings):
-    database_uri: str
+    database_uri: str = os.getenv("DATABASE_URL")
     secret_key: str
     env: str
     jwt_algorithm: str="HS256"
